@@ -308,9 +308,9 @@ export default function AdminDashboard() {
               <div className="w-1/3 bg-white p-4 rounded-xl shadow-sm border border-slate-200 overflow-auto h-full">
                 <h3 className="font-bold text-lg mb-4 text-slate-800 sticky top-0 bg-white pb-2 border-b">Participants ({participants.length})</h3>
                 <ul className="flex flex-col gap-2">
-                  {participants.map(p => (
+                  {participants.map((p, idx) => (
                     <li 
-                      key={p.participant_id} 
+                      key={p.session_id || idx} 
                       className={`p-3 border rounded-lg cursor-pointer transition ${selectedParticipant === p.participant_id ? 'bg-blue-50 border-blue-300 text-blue-800 font-medium' : 'hover:bg-slate-50 border-slate-100'}`}
                       onClick={() => loadParticipantData(p.participant_id)}
                     >
