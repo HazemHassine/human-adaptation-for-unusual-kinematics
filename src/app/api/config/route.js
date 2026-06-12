@@ -3,14 +3,69 @@ import Config from "@/models/Config";
 import { NextResponse } from "next/server";
 
 const DEFAULT_BLOCKS = [
-  { id: "practice", mapping: "identity", trials: 5, condition: "none" },
-  { id: "baseline_rotation", mapping: "identity", trials: 10, condition: "rotation" },
-  { id: "adapt_rotation", mapping: "rotation_45", trials: 20, condition: "rotation" },
-  { id: "perturb_rotation", mapping: "rotation_60", trials: 10, condition: "rotation" },
-  { id: "washout_rotation", mapping: "identity", trials: 10, condition: "rotation" },
-  { id: "baseline_mirror", mapping: "identity", trials: 10, condition: "mirror" },
-  { id: "adapt_mirror", mapping: "mirror_horizontal", trials: 20, condition: "mirror" },
-  { id: "washout_mirror", mapping: "identity", trials: 10, condition: "mirror" },
+  { 
+    id: "baseline_rotation", 
+    mapping: "identity", // fallback
+    mapping_type: "identity", 
+    mapping_params: { rotation_angle: 0, mirror_axis: "none", shear_factor: 0, gain_factor: 1.0, position_coefficient: 0 }, 
+    task_type: "reaching",
+    trials: 5, 
+    condition: "rotation" 
+  },
+  { 
+    id: "adapt_rotation", 
+    mapping: "rotation_45", // fallback
+    mapping_type: "rotation", 
+    mapping_params: { rotation_angle: 45, mirror_axis: "none", shear_factor: 0, gain_factor: 1.0, position_coefficient: 0 }, 
+    task_type: "reaching",
+    trials: 20, 
+    condition: "rotation" 
+  },
+  { 
+    id: "washout_rotation", 
+    mapping: "identity", // fallback
+    mapping_type: "identity", 
+    mapping_params: { rotation_angle: 0, mirror_axis: "none", shear_factor: 0, gain_factor: 1.0, position_coefficient: 0 }, 
+    task_type: "reaching",
+    trials: 10, 
+    condition: "rotation" 
+  },
+  { 
+    id: "baseline_mirror", 
+    mapping: "identity", // fallback
+    mapping_type: "identity", 
+    mapping_params: { rotation_angle: 0, mirror_axis: "none", shear_factor: 0, gain_factor: 1.0, position_coefficient: 0 }, 
+    task_type: "reaching",
+    trials: 5, 
+    condition: "mirror" 
+  },
+  { 
+    id: "adapt_mirror", 
+    mapping: "mirror_horizontal", // fallback
+    mapping_type: "mirror", 
+    mapping_params: { rotation_angle: 0, mirror_axis: "horizontal", shear_factor: 0, gain_factor: 1.0, position_coefficient: 0 }, 
+    task_type: "reaching",
+    trials: 20, 
+    condition: "mirror" 
+  },
+  { 
+    id: "washout_mirror", 
+    mapping: "identity", // fallback
+    mapping_type: "identity", 
+    mapping_params: { rotation_angle: 0, mirror_axis: "none", shear_factor: 0, gain_factor: 1.0, position_coefficient: 0 }, 
+    task_type: "reaching",
+    trials: 10, 
+    condition: "mirror" 
+  },
+  { 
+    id: "tracking_baseline", 
+    mapping: "identity", // fallback
+    mapping_type: "identity", 
+    mapping_params: { rotation_angle: 0, mirror_axis: "none", shear_factor: 0, gain_factor: 1.0, position_coefficient: 0 }, 
+    task_type: "tracking",
+    trials: 5, 
+    condition: "none" 
+  }
 ];
 
 const DEFAULT_QUESTIONNAIRE = [
@@ -48,4 +103,8 @@ export async function PUT(req) {
   } catch (error) {
     return NextResponse.json({ success: false, error: error.message }, { status: 400 });
   }
+}
+
+export async function POST(req) {
+  return PUT(req);
 }

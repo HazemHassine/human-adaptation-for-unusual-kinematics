@@ -34,6 +34,35 @@ export async function GET(req) {
       return NextResponse.json({ success: true, data: { stats: stats[0], totalParticipants, totalTrials } }, { status: 200 });
     }
 
+    if (action === "device_stats") {
+      const breakdown = await Trial.aggregate([
+        {
+          $lookup: {
+            from: "participants",
+            localField: "session_id",
+            foreignField: "session_id",
+            as: "pinfo"
+          }
+        },
+        {
+          $unwind: {
+            path: "$pinfo",
+            preserveNullAndEmptyArrays: true
+          }
+        },
+        {
+          $group: {
+            _id: { $ifNull: ["$pinfo.input_device", "mouse"] },
+            avg_movement_time: { $avg: "$movement_time_ms" },
+            avg_reaction_time: { $avg: "$reaction_time_ms" },
+            avg_rmse: { $avg: "$tracking_rmse_px" },
+            total_trials: { $sum: 1 }
+          }
+        }
+      ]);
+      return NextResponse.json({ success: true, data: breakdown }, { status: 200 });
+    }
+
     if (action === "participant_movements") {
       const participant_id = searchParams.get("participant_id");
       if (!participant_id) throw new Error("participant_id is required");
@@ -50,3 +79,17 @@ export async function GET(req) {
     return NextResponse.json({ success: false, error: error.message }, { status: 400 });
   }
 }
+
+export async function DELETE(req) {
+  try {
+    await dbConnect();
+    await Participant.deleteMany({});
+    await Trial.deleteMany({});
+    await Movement.deleteMany({});
+    await Questionnaire.deleteMany({});
+    return NextResponse.json({ success: true, message: "Database reset complete." }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ success: false, error: error.message }, { status: 400 });
+  }
+}
+

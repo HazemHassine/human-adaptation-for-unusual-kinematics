@@ -6,6 +6,7 @@ const TrialSchema = new mongoose.Schema({
   condition: { type: String },
   block_id: { type: String },
   mapping_type: { type: String },
+  task_type: { type: String, enum: ["reaching", "tracking"], default: "reaching" },
   trial_id: { type: Number },
   target_angle_deg: { type: Number },
   target_distance_px: { type: Number },
@@ -17,6 +18,8 @@ const TrialSchema = new mongoose.Schema({
   path_length_px: { type: Number },
   straightness_ratio: { type: Number },
   num_direction_reversals: { type: Number },
+  tracking_rmse_px: { type: Number },
+  ideal_path_points: [{ x: Number, y: Number }],
 });
 
 export default mongoose.models.Trial || mongoose.model("Trial", TrialSchema);

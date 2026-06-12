@@ -7,7 +7,7 @@ export default function ExperimentRunner({ devMode }) {
   const [phase, setPhase] = useState("LOADING"); // LOADING, START, INSTRUCTIONS, TASK, QUESTIONNAIRE, END
   const [blocks, setBlocks] = useState([]);
   const [questionnaire, setQuestionnaire] = useState([]);
-  const [participant, setParticipant] = useState({ participant_id: "", session_id: "" });
+  const [participant, setParticipant] = useState({ participant_id: "", session_id: "", input_device: "mouse" });
   const [currentBlockIndex, setCurrentBlockIndex] = useState(0);
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -35,6 +35,7 @@ export default function ExperimentRunner({ devMode }) {
       participant_id: participant.participant_id || "Anonymous",
       session_id: sessionId,
       condition_order: "rotation_first",
+      input_device: participant.input_device || "mouse",
     };
     
     setParticipant(partData);
@@ -106,6 +107,17 @@ export default function ExperimentRunner({ devMode }) {
               onChange={e => setParticipant({...participant, participant_id: e.target.value})}
               required
             />
+            <div className="flex flex-col gap-1 text-left">
+              <label className="text-sm font-semibold text-gray-700">Input Device</label>
+              <select 
+                className="border p-2 rounded text-black bg-white"
+                value={participant.input_device}
+                onChange={e => setParticipant({...participant, input_device: e.target.value})}
+              >
+                <option value="mouse">Mouse</option>
+                <option value="trackpad">Trackpad</option>
+              </select>
+            </div>
             <button type="submit" className="bg-blue-600 text-white p-2 rounded">Start Experiment</button>
           </form>
         </div>
