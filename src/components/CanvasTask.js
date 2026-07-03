@@ -708,16 +708,19 @@ export default function CanvasTask({ block, devMode, seed, onComplete }) {
 
   return (
     <div className="flex flex-col items-center">
-      <p className="mb-2 text-gray-700 font-semibold">
-        Block: {block.id} ({Math.min(trialCount + 1, block.trials)} / {block.trials} trials)
-      </p>
-      <p className="mb-2 text-sm text-gray-600 capitalize">
-        Task: {taskType} | Mapping: {resolvedMappingType} 
-        {resolvedMappingType === "rotation" ? ` (${resolvedParams.rotation_angle}°)` : ""}
-      </p>
-      <p className="mb-4 text-xs text-gray-500">
-        Click the canvas to lock cursor and start. Press ESC to unlock.
-      </p>
+      <div className="w-[800px] flex justify-between items-end mb-4">
+        <div>
+          <p className="text-xl font-bold text-slate-800">
+            Task: {taskType === "reaching" ? "Reaching" : "Path Tracking"}
+          </p>
+          <p className="text-sm font-semibold text-slate-500">
+            Trial {Math.min(trialCount + 1, block.trials)} of {block.trials}
+          </p>
+        </div>
+        <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-2 rounded-lg text-sm font-medium shadow-sm">
+          <strong>Click the canvas</strong> to start. Press <kbd className="bg-white border border-blue-200 px-1 rounded shadow-sm">ESC</kbd> to pause.
+        </div>
+      </div>
       <canvas
         ref={canvasRef}
         width={800}

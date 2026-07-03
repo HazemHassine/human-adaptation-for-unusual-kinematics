@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import CanvasTask from "./CanvasTask";
-import { Shield, Info, Lock, EyeOff, Mail, Check } from "lucide-react";
+import { Shield, Info, Lock, EyeOff, Mail, Check, Star, Zap, Target } from "lucide-react";
+import confetti from "canvas-confetti";
 
 export default function ExperimentRunner({ devMode }) {
   const [phase, setPhase] = useState("LOADING"); // LOADING, START, INSTRUCTIONS, TASK, BLOCK_BREAK, QUESTIONNAIRE, END
@@ -12,6 +13,7 @@ export default function ExperimentRunner({ devMode }) {
   const [currentBlockIndex, setCurrentBlockIndex] = useState(0);
   const [errorMsg, setErrorMsg] = useState("");
   const [consentChecked, setConsentChecked] = useState(false);
+  const [blockStats, setBlockStats] = useState({ accuracy: 0, avgSpeed: 0, score: 0 });
   const [disclaimerConfig, setDisclaimerConfig] = useState({
     courseName: "Scientific Research Methods: Foundations & Techniques",
     universityName: "Bielefeld University",
@@ -62,6 +64,17 @@ export default function ExperimentRunner({ devMode }) {
       };
     });
   }, [devMode]);
+
+  useEffect(() => {
+    if (phase === "BLOCK_BREAK" || phase === "END") {
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444']
+      });
+    }
+  }, [phase]);
   
   const handleStart = async (e) => {
     e.preventDefault();
@@ -95,6 +108,15 @@ export default function ExperimentRunner({ devMode }) {
       mapping_type: blocks[currentBlockIndex].mapping,
       condition: blocks[currentBlockIndex].condition
     }));
+
+    // Calculate block stats for gamification
+    if (trialLogs.length > 0) {
+      const avgSpeed = Math.round(trialLogs.reduce((acc, t) => acc + (t.reaction_time_ms || 0), 0) / trialLogs.length);
+      const avgStraightness = trialLogs.reduce((acc, t) => acc + (t.straightness_ratio || 0), 0) / trialLogs.length;
+      const accuracy = Math.round(avgStraightness * 100);
+      const score = Math.round(accuracy * 10) + Math.round(10000 / (avgSpeed + 1));
+      setBlockStats({ accuracy: isNaN(accuracy) ? 0 : accuracy, avgSpeed: isNaN(avgSpeed) ? 0 : avgSpeed, score: isNaN(score) ? 0 : score });
+    }
 
     // Send data asynchronously in the background so it doesn't block the UI transition
     if (mappedMovements.length > 0) {
@@ -274,15 +296,46 @@ export default function ExperimentRunner({ devMode }) {
 
   if (phase === "INSTRUCTIONS") {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4 text-black">
-        <div className="bg-white p-8 rounded shadow-md max-w-lg text-center">
-          <h2 className="text-xl font-bold mb-4">Instructions</h2>
-          <p className="mb-4 text-gray-700 text-left">
-            In this task, you will use your mouse to move a red cursor into a blue target circle.
-            The target will only appear once you move into the black start circle in the center.
-            Sometimes the cursor may behave differently than expected. Try your best to reach the targets as quickly as possible.
-          </p>
-          <button onClick={() => setPhase("TASK")} className="bg-blue-600 text-white p-2 rounded px-6">I Understand</button>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50 p-4 text-slate-800">
+        <div className="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 max-w-2xl w-full">
+          <h2 className="text-2xl font-bold mb-6 text-slate-900 border-b pb-4 flex items-center gap-2">
+            <Target className="text-blue-600" /> How to Play
+          </h2>
+          
+          <div className="space-y-6 text-slate-600">
+            <div className="flex gap-4 items-start">
+              <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold shrink-0 mt-1">1</div>
+              <div>
+                <h3 className="font-bold text-slate-800 text-lg">Lock Your Cursor</h3>
+                <p>When the task starts, you will see a canvas. <strong>Click anywhere on it</strong> to lock your mouse cursor inside the game window. You can press <kbd className="bg-slate-100 border border-slate-200 px-1 rounded mx-1">ESC</kbd> at any time if you need to pause or unlock your mouse.</p>
+              </div>
+            </div>
+
+            <div className="flex gap-4 items-start">
+              <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold shrink-0 mt-1">2</div>
+              <div>
+                <h3 className="font-bold text-slate-800 text-lg">Start the Trial</h3>
+                <p>Move your red cursor into the <strong>black starting circle</strong> in the very center. Hold it there until a blue target circle appears on the edge of the screen.</p>
+              </div>
+            </div>
+
+            <div className="flex gap-4 items-start">
+              <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold shrink-0 mt-1">3</div>
+              <div>
+                <h3 className="font-bold text-slate-800 text-lg">Shoot for the Target!</h3>
+                <p>Move your cursor directly into the blue target as fast and as straight as you can. Sometimes the cursor might behave unpredictably (like a mirror or rotated controls) — try your best to adapt!</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8 pt-6 border-t border-slate-100 flex justify-end">
+            <button 
+              onClick={() => setPhase("TASK")} 
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl shadow-md transition transform hover:scale-105 active:scale-95 flex items-center gap-2"
+            >
+              I Understand, Let's Go! <Zap size={18} />
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -300,19 +353,40 @@ export default function ExperimentRunner({ devMode }) {
   if (phase === "BLOCK_BREAK") {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50 p-4 md:p-8 text-slate-800 font-sans">
-        <div className="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 max-w-lg text-center">
-          <h2 className="text-2xl font-bold mb-4 text-slate-900">Block Completed</h2>
-          <p className="mb-8 text-slate-600 text-sm leading-relaxed">
-            Great job! You have completed this block. Take a short break, and click the button below when you are ready to continue with the next block.
+        <div className="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 max-w-lg w-full text-center">
+          <div className="w-20 h-20 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-blue-50">
+            <Star size={40} className="fill-current text-yellow-400 stroke-yellow-500" />
+          </div>
+          <h2 className="text-3xl font-black mb-2 text-slate-900 tracking-tight">Block Completed!</h2>
+          <p className="mb-6 text-slate-500 font-medium">
+            Great job! You have conquered this block.
           </p>
+
+          <div className="bg-slate-50 rounded-xl p-4 flex justify-between gap-4 mb-8 border border-slate-100">
+            <div className="flex flex-col items-center flex-1">
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Accuracy</span>
+              <span className="text-2xl font-black text-blue-600">{blockStats.accuracy}%</span>
+            </div>
+            <div className="w-px bg-slate-200"></div>
+            <div className="flex flex-col items-center flex-1">
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Avg Speed</span>
+              <span className="text-2xl font-black text-emerald-600">{blockStats.avgSpeed}ms</span>
+            </div>
+            <div className="w-px bg-slate-200"></div>
+            <div className="flex flex-col items-center flex-1">
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Score</span>
+              <span className="text-2xl font-black text-purple-600">{blockStats.score}</span>
+            </div>
+          </div>
+
           <button 
             onClick={() => {
               setCurrentBlockIndex(i => i + 1);
               setPhase("TASK");
             }} 
-            className="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-xl px-8 font-bold text-sm shadow-xs transition-all duration-200 hover:shadow-md active:scale-[0.98]"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl font-bold text-lg shadow-md transition transform hover:scale-[1.02] active:scale-[0.98]"
           >
-            Continue
+            Start Next Block
           </button>
         </div>
       </div>
@@ -363,10 +437,16 @@ export default function ExperimentRunner({ devMode }) {
 
   if (phase === "END") {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 text-black">
-        <div className="bg-white p-8 rounded shadow-md max-w-md text-center">
-          <h2 className="text-xl font-bold mb-4">Thank You!</h2>
-          <p>The experiment is complete and your data has been saved securely.</p>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50 p-4 md:p-8 text-slate-800 font-sans">
+        <div className="bg-white p-10 rounded-3xl shadow-2xl border border-slate-100 max-w-lg w-full text-center relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 via-emerald-500 to-purple-500"></div>
+          <h2 className="text-4xl font-black mb-4 text-slate-900">Thank You! 🎉</h2>
+          <p className="text-lg text-slate-600 mb-6 font-medium">
+            You've successfully completed the entire experiment.
+          </p>
+          <p className="text-sm text-slate-500 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-100 mb-6">
+            Your participation provides invaluable data for our motor learning research. You may now close this browser tab. Have a wonderful day!
+          </p>
         </div>
       </div>
     );
