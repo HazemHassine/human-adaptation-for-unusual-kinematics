@@ -84,7 +84,7 @@ export default function ExperimentRunner({ devMode }) {
     setPhase("INSTRUCTIONS");
   };
 
-  const handleTaskComplete = async (movements, trialLogs) => {
+  const handleTaskComplete = (movements, trialLogs) => {
     // Add participant info to logs
     const mappedMovements = movements.map(m => ({ ...m, participant_id: participant.participant_id, session_id: participant.session_id }));
     const mappedTrials = trialLogs.map(t => ({ 
@@ -96,12 +96,12 @@ export default function ExperimentRunner({ devMode }) {
       condition: blocks[currentBlockIndex].condition
     }));
 
-    // Send data
+    // Send data asynchronously in the background so it doesn't block the UI transition
     if (mappedMovements.length > 0) {
-      await fetch("/api/movements", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(mappedMovements) });
+      fetch("/api/movements", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(mappedMovements) }).catch(console.error);
     }
     if (mappedTrials.length > 0) {
-      await fetch("/api/trials", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(mappedTrials) });
+      fetch("/api/trials", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(mappedTrials) }).catch(console.error);
     }
 
     if (currentBlockIndex < blocks.length - 1) {
