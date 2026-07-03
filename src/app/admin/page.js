@@ -7,6 +7,8 @@ import { LayoutDashboard, Settings2, Database, LogOut, CheckCircle2, RefreshCw, 
 export default function AdminDashboard() {
   const [authenticated, setAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
+  const [authError, setAuthError] = useState("");
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
   
   const [activeTab, setActiveTab] = useState("flow"); // flow, questionnaire, settings, analytics
   const [analyticsTab, setAnalyticsTab] = useState("overview"); // overview, adaptation, aftereffect, replay, export
@@ -583,6 +585,28 @@ export default function AdminDashboard() {
     refreshData();
   };
 
+  const handleLogin = async () => {
+    try {
+      setIsLoggingIn(true);
+      setAuthError("");
+      const res = await fetch("/api/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setAuthenticated(true);
+      } else {
+        setAuthError(data.error || "Invalid password");
+      }
+    } catch (e) {
+      setAuthError("Failed to connect to server");
+    } finally {
+      setIsLoggingIn(false);
+    }
+  };
+
   if (!authenticated) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-slate-100">
@@ -591,6 +615,11 @@ export default function AdminDashboard() {
             <LayoutDashboard size={32} />
           </div>
           <h1 className="text-2xl font-bold mb-6 text-slate-800">Admin Login</h1>
+          {authError && (
+            <div className="bg-red-50 text-red-600 p-2 rounded-lg mb-4 text-sm font-semibold border border-red-100">
+              {authError}
+            </div>
+          )}
           <input 
             type="password" 
             className="border-2 border-slate-200 p-3 rounded-lg w-full mb-4 focus:border-blue-500 focus:outline-none transition"
@@ -598,16 +627,15 @@ export default function AdminDashboard() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === "Enter" && password.trim().toUpperCase() === "SRM2026") setAuthenticated(true);
+              if (e.key === "Enter") handleLogin();
             }}
           />
           <button 
-            className="bg-blue-600 text-white px-4 py-3 rounded-lg w-full font-bold hover:bg-blue-700 transition"
-            onClick={() => {
-              if (password.trim().toUpperCase() === "SRM2026") setAuthenticated(true);
-            }}
+            className="bg-blue-600 text-white px-4 py-3 rounded-lg w-full font-bold hover:bg-blue-700 transition disabled:opacity-50"
+            onClick={handleLogin}
+            disabled={isLoggingIn}
           >
-            Login
+            {isLoggingIn ? "Logging in..." : "Login"}
           </button>
         </div>
       </div>
