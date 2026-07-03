@@ -4,18 +4,32 @@ import React, { useState } from "react";
 import CanvasTask from "@/components/CanvasTask";
 import { X } from "lucide-react";
 
-export default function PreviewModal({ block, onClose }) {
+export default function PreviewModal({ block, blocks, onClose }) {
+  const [currentBlockIndex, setCurrentBlockIndex] = useState(0);
   const [completeMessage, setCompleteMessage] = useState(null);
 
+  const isMultiBlock = Array.isArray(blocks) && blocks.length > 0;
+  const currentBlock = isMultiBlock ? blocks[currentBlockIndex] : block;
+
+  if (!currentBlock) {
+    return null; // Safety catch if blocks is empty
+  }
+
   const handleTaskComplete = (movements, trialLogs) => {
-    setCompleteMessage(`Preview complete! Logged ${movements.length} movements and ${trialLogs.length} trials (Not saved).`);
+    if (isMultiBlock && currentBlockIndex < blocks.length - 1) {
+      setCurrentBlockIndex(currentBlockIndex + 1);
+    } else {
+      setCompleteMessage(`Preview complete!`);
+    }
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col relative animate-in fade-in zoom-in duration-200">
         <div className="flex justify-between items-center bg-gray-100 p-4 border-b">
-          <h2 className="font-bold text-lg text-gray-800">Preview: {block.id}</h2>
+          <h2 className="font-bold text-lg text-gray-800">
+            Preview: {currentBlock.id} {isMultiBlock && `(${currentBlockIndex + 1}/${blocks.length})`}
+          </h2>
           <button 
             onClick={onClose} 
             className="p-1 rounded hover:bg-gray-200 transition"
@@ -36,7 +50,7 @@ export default function PreviewModal({ block, onClose }) {
               </button>
             </div>
           ) : (
-            <CanvasTask block={block} devMode={true} onComplete={handleTaskComplete} />
+            <CanvasTask key={currentBlock.id} block={currentBlock} devMode={true} onComplete={handleTaskComplete} />
           )}
         </div>
       </div>

@@ -12,109 +12,259 @@ import {
 import "@xyflow/react/dist/style.css";
 
 import BlockNode from "./BlockNode";
+import StartNode from "./StartNode";
+import EndNode from "./EndNode";
+import CustomEdge from "./CustomEdge";
 import PreviewModal from "./PreviewModal";
 
 export default function FlowBuilder({ initialBlocks, onBlocksChange }) {
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
   const [previewBlock, setPreviewBlock] = useState(null);
+  const [previewBlocks, setPreviewBlocks] = useState(null);
 
   // Register custom node type
-  const nodeTypes = useMemo(() => ({ blockNode: BlockNode }), []);
+  const nodeTypes = useMemo(() => ({ blockNode: BlockNode, startNode: StartNode, endNode: EndNode }), []);
+  const edgeTypes = useMemo(() => ({ custom: CustomEdge }), []);
 
   // Initialize nodes from blocks
   useEffect(() => {
-    if (nodes.length === 0 && initialBlocks.length > 0) {
-      const newNodes = initialBlocks.map((b, i) => ({
-        id: b.id, // Using block.id as node id initially
-        type: "blockNode",
-        position: { x: 50 + i * 350, y: 150 }, // Layout them horizontally
-        data: { block: b }
-      }));
-      setNodes(newNodes);
-
+    if (nodes.length === 0) {
+      const newNodes = [];
       const newEdges = [];
-      for (let i = 0; i < initialBlocks.length - 1; i++) {
-        newEdges.push({
-          id: `e-${initialBlocks[i].id}-${initialBlocks[i+1].id}`,
-          source: initialBlocks[i].id,
-          target: initialBlocks[i+1].id,
-          animated: true,
-          style: { stroke: '#3b82f6', strokeWidth: 2 }
+
+      // Add start node
+      newNodes.push({ id: 'start', type: 'startNode', position: { x: 50, y: 150 }, data: { } });
+
+      let currentX = 300;
+      let lastId = 'start';
+
+      if (initialBlocks && initialBlocks.length > 0) {
+        initialBlocks.forEach((b) => {
+          newNodes.push({
+            id: b.id,
+            type: "blockNode",
+            position: { x: currentX, y: 150 },
+            data: { block: b }
+          });
+          
+          newEdges.push({
+            id: `e-${lastId}-${b.id}`,
+            source: lastId,
+            target: b.id,
+            type: 'custom',
+            animated: true,
+            style: { stroke: '#3b82f6', strokeWidth: 2 }
+          });
+          
+          lastId = b.id;
+          currentX += 350;
         });
       }
+
+      // Add end node
+      newNodes.push({ id: 'end', type: 'endNode', position: { x: currentX, y: 150 }, data: {} });
+      
+      newEdges.push({
+        id: `e-${lastId}-end`,
+        source: lastId,
+        target: 'end',
+        type: 'custom',
+        animated: true,
+        style: { stroke: '#3b82f6', strokeWidth: 2 }
+      });
+
+      setNodes(newNodes);
       setEdges(newEdges);
     }
   }, [initialBlocks]);
 
   // Update parent whenever nodes/edges change so it can save
   useEffect(() => {
-    // Reconstruct the ordered blocks array based on edges (simplistic sorting)
-    // We start from a node with no incoming edges, trace the targets.
-    // For now, let's just keep the order of `nodes` to keep it simple, but we should sort logically.
-    
-    // Sort logic based on edges:
     const blockMap = {};
-    nodes.forEach(n => blockMap[n.id] = n.data.block);
+    nodes.forEach(n => {
+      if (n.type === 'blockNode') {
+        blockMap[n.id] = n.data.block;
+      }
+    });
     
-    // Find root (node with no target pointing to it)
-    let rootNode = nodes.find(n => !edges.some(e => e.target === n.id));
-    if (!rootNode && nodes.length > 0) rootNode = nodes[0];
-
+    // Trace from start node
     const orderedBlocks = [];
-    let currentId = rootNode?.id;
+    let currentId = 'start';
     
-    while(currentId && blockMap[currentId]) {
-      orderedBlocks.push(blockMap[currentId]);
+    // Safe guard against infinite loops
+    const visited = new Set();
+    
+    while(currentId && !visited.has(currentId)) {
+      visited.add(currentId);
+      if (blockMap[currentId]) {
+        orderedBlocks.push(blockMap[currentId]);
+      }
       const nextEdge = edges.find(e => e.source === currentId);
       currentId = nextEdge ? nextEdge.target : null;
     }
 
-    // If there are isolated nodes, append them
-    nodes.forEach(n => {
-      if (!orderedBlocks.find(b => b.id === n.id)) {
-        orderedBlocks.push(blockMap[n.id]);
-      }
-    });
-
     onBlocksChange(orderedBlocks);
   }, [nodes, edges]);
 
-  const updateBlock = (nodeId, field, value) => {
-    setNodes(nds => nds.map(n => {
-      if (n.id === nodeId) {
-        return { ...n, data: { ...n.data, block: { ...n.data.block, [field]: value } } };
+  const updateBlock = (nodeId, fieldOrUpdates, value) => {
+    setNodes(nds => {
+      const updates = typeof fieldOrUpdates === 'object' ? fieldOrUpdates : { [fieldOrUpdates]: value };
+      
+      if (updates.id !== undefined) {
+        const newId = updates.id.trim();
+        if (nds.some(n => n.id !== nodeId && n.type === 'blockNode' && n.data?.block?.id === newId)) {
+          alert(`A block named "${newId}" already exists. Block names must be unique.`);
+          return nds;
+        }
       }
-      return n;
-    }));
+
+      return nds.map(n => {
+        if (n.id === nodeId) {
+          return { ...n, data: { ...n.data, block: { ...n.data.block, ...updates } } };
+        }
+        return n;
+      });
+    });
   };
+
+  const deleteBlock = useCallback((nodeId) => {
+    setNodes(nds => nds.filter(n => n.id !== nodeId));
+    setEdges(eds => eds.filter(e => e.source !== nodeId && e.target !== nodeId));
+  }, []);
+
+  const deleteEdge = useCallback((edgeId) => {
+    setEdges(eds => eds.filter(e => e.id !== edgeId));
+  }, []);
 
   const handlePreview = (block) => {
     setPreviewBlock(block);
+    setPreviewBlocks(null);
   };
+
+  const handlePreviewAll = useCallback(() => {
+    // Collect all blocks in order from start
+    const blockMap = {};
+    nodes.forEach(n => {
+      if (n.type === 'blockNode') {
+        blockMap[n.id] = n.data.block;
+      }
+    });
+    
+    const orderedBlocks = [];
+    let currentId = 'start';
+    const visited = new Set();
+    
+    while(currentId && !visited.has(currentId)) {
+      visited.add(currentId);
+      if (blockMap[currentId]) {
+        orderedBlocks.push(blockMap[currentId]);
+      }
+      const nextEdge = edges.find(e => e.source === currentId);
+      currentId = nextEdge ? nextEdge.target : null;
+    }
+
+    if (orderedBlocks.length > 0) {
+      setPreviewBlocks(orderedBlocks);
+      setPreviewBlock(null);
+    } else {
+      alert("No blocks connected to Start node to preview.");
+    }
+  }, [nodes, edges]);
 
   const onNodesChange = useCallback((changes) => setNodes((nds) => applyNodeChanges(changes, nds)), []);
   const onEdgesChange = useCallback((changes) => setEdges((eds) => applyEdgeChanges(changes, eds)), []);
-  const onConnect = useCallback((params) => setEdges((eds) => addEdge({...params, animated: true, style: { stroke: '#3b82f6', strokeWidth: 2 }}, eds)), []);
+  
+  const onConnect = useCallback((params) => {
+    setEdges((eds) => {
+      // 1-to-1 constraint: Remove any existing edge that shares the same source OR target
+      const filteredEds = eds.filter(e => e.source !== params.source && e.target !== params.target);
+      return addEdge({
+        ...params, 
+        type: 'custom', 
+        animated: true, 
+        style: { stroke: '#3b82f6', strokeWidth: 2 }
+      }, filteredEds);
+    });
+  }, []);
 
   const addNode = () => {
     const newId = "block_" + Date.now();
-    const newBlock = { id: newId, mapping: "identity", trials: 10, condition: "none" };
-    setNodes(nds => [
-      ...nds, 
-      { 
+    const newBlock = { id: newId, mapping_type: "identity", task_type: "reaching", path_type: "none", trials: 10, condition: "none" };
+    
+    setNodes(nds => {
+      // Find the edge going to the end node, we want to insert right before the end node
+      const edgeToEnd = edges.find(e => e.target === 'end');
+      const tailNodeId = edgeToEnd ? edgeToEnd.source : 'start';
+      const tailNode = nds.find(n => n.id === tailNodeId);
+      
+      const newNode = { 
         id: newId, 
         type: "blockNode", 
-        position: { x: Math.random() * 200 + 50, y: Math.random() * 200 + 50 }, 
-        data: { block: newBlock, updateBlock, onPreview: handlePreview } 
+        position: tailNode ? { x: tailNode.position.x + 350, y: tailNode.position.y } : { x: 50, y: 150 }, 
+        data: { block: newBlock, updateBlock, deleteBlock, onPreview: handlePreview } 
+      };
+      
+      if (tailNode) {
+        setTimeout(() => {
+          setEdges(eds => {
+            // Remove the edge to end
+            const withoutEndEdge = eds.filter(e => e.target !== 'end' || e.source !== tailNodeId);
+            // Add edge from tail to new node
+            const newEds = addEdge({
+              id: `e-${tailNodeId}-${newId}`,
+              source: tailNodeId,
+              target: newId,
+              type: 'custom',
+              animated: true,
+              style: { stroke: '#3b82f6', strokeWidth: 2 }
+            }, withoutEndEdge);
+            // Add edge from new node to end
+            return addEdge({
+              id: `e-${newId}-end`,
+              source: newId,
+              target: 'end',
+              type: 'custom',
+              animated: true,
+              style: { stroke: '#3b82f6', strokeWidth: 2 }
+            }, newEds);
+          });
+        }, 10);
       }
-    ]);
+      
+      // Move 'end' node to the right
+      const endNodeIndex = nds.findIndex(n => n.id === 'end');
+      const newNodes = [...nds, newNode];
+      if (endNodeIndex !== -1 && tailNode) {
+        newNodes[endNodeIndex] = {
+          ...newNodes[endNodeIndex],
+          position: { x: tailNode.position.x + 700, y: tailNode.position.y }
+        };
+      }
+      
+      return newNodes;
+    });
   };
 
   // Inject functions into node data
-  const nodesWithCallbacks = nodes.map(n => ({
-    ...n,
-    data: { ...n.data, updateBlock, onPreview: handlePreview }
+  const nodesWithCallbacks = nodes.map(n => {
+    if (n.type === 'blockNode') {
+      return {
+        ...n,
+        data: { ...n.data, updateBlock, deleteBlock, onPreview: handlePreview }
+      };
+    } else if (n.type === 'startNode') {
+      return {
+        ...n,
+        data: { ...n.data, onPreviewAll: handlePreviewAll }
+      };
+    }
+    return n;
+  });
+
+  const edgesWithCallbacks = edges.map(e => ({
+    ...e,
+    data: { ...e.data, onDelete: deleteEdge }
   }));
 
   return (
@@ -130,19 +280,24 @@ export default function FlowBuilder({ initialBlocks, onBlocksChange }) {
 
       <ReactFlow
         nodes={nodesWithCallbacks}
-        edges={edges}
+        edges={edgesWithCallbacks}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         fitView
       >
         <Background color="#ccc" gap={16} />
         <Controls />
       </ReactFlow>
 
-      {previewBlock && (
-        <PreviewModal block={previewBlock} onClose={() => setPreviewBlock(null)} />
+      {(previewBlock || previewBlocks) && (
+        <PreviewModal 
+          block={previewBlock} 
+          blocks={previewBlocks} 
+          onClose={() => { setPreviewBlock(null); setPreviewBlocks(null); }} 
+        />
       )}
     </div>
   );

@@ -13,7 +13,29 @@ export async function GET(req) {
     const action = searchParams.get("action");
 
     if (action === "participants") {
-      const participants = await Participant.find().sort({ created_at: -1 });
+      const participants = await Participant.aggregate([
+        {
+          $lookup: {
+            from: "questionnaires",
+            localField: "participant_id",
+            foreignField: "participant_id",
+            as: "qData"
+          }
+        },
+        {
+          $addFields: {
+            finished: { $gt: [{ $size: "$qData" }, 0] }
+          }
+        },
+        {
+          $project: {
+            qData: 0
+          }
+        },
+        {
+          $sort: { created_at: -1 }
+        }
+      ]);
       return NextResponse.json({ success: true, data: participants }, { status: 200 });
     }
     
@@ -68,7 +90,7 @@ export async function GET(req) {
       if (!participant_id) throw new Error("participant_id is required");
       
       const movements = await Movement.find({ participant_id }).sort({ timestamp_ms: 1 });
-      const trials = await Trial.find({ participant_id }).sort({ trial_id: 1 });
+      const trials = await Trial.find({ participant_id }).sort({ _id: 1 });
       const questionnaire = await Questionnaire.findOne({ participant_id });
       
       return NextResponse.json({ success: true, data: { movements, trials, questionnaire } }, { status: 200 });

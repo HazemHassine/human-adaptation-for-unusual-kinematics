@@ -11,6 +11,9 @@ const QuestionnaireSchema = new mongoose.Schema({
   q_mirror_movement: { type: Number },
   q_sudden_understand: { type: Number },
   q_mapping_awareness: { type: String },
+  q_adaptation_difficulty: { type: Number },
+  q_strategy_noticed: { type: String },
+  q_strategy_desc: { type: String },
 }, { strict: false });
 
 export default mongoose.models.Questionnaire || mongoose.model("Questionnaire", QuestionnaireSchema);

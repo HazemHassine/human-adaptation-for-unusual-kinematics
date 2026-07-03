@@ -1,0 +1,577 @@
+[
+  {
+    "_id": "6a29f0f8a89f4ac0ed404843",
+    "singleton": "default",
+    "blocks": [
+      {
+        "id": "practice",
+        "block_type": "baseline",
+        "mapping": "identity",
+        "mapping_type": "identity",
+        "mapping_params": {
+          "base_rotation_angle_deg": 0,
+          "rotation_noise_deg": 0,
+          "rotation_angle": 0,
+          "mirror_axis": "none",
+          "shear_factor": 0,
+          "gain_factor": 1,
+          "position_coefficient": 0
+        },
+        "task_type": "reaching",
+        "path_type": "none",
+        "target_distance_px": 150,
+        "min_target_distance_px": 150,
+        "max_target_distance_px": 150,
+        "randomize_target_distance": false,
+        "min_target_angle_deg": 0,
+        "max_target_angle_deg": 360,
+        "randomize_target_angle": false,
+        "target_angle_mode": "random_cardinal",
+        "fixed_target_angle_deg": 0,
+        "normalized_target_distance": 1,
+        "wave_amplitude": 30,
+        "wave_frequency": 1.5,
+        "min_wave_frequency": 1.5,
+        "max_wave_frequency": 1.5,
+        "wave_frequency_noise": 0,
+        "require_return_to_start": true,
+        "trials": 5,
+        "condition": "none",
+        "_id": "6a29f0f8a89f4ac0ed404844"
+      },
+      {
+        "id": "baseline_rotation",
+        "block_type": "baseline",
+        "mapping": "identity",
+        "mapping_type": "identity",
+        "mapping_params": {
+          "base_rotation_angle_deg": 0,
+          "rotation_noise_deg": 0,
+          "rotation_angle": 0,
+          "mirror_axis": "none",
+          "shear_factor": 0,
+          "gain_factor": 1,
+          "position_coefficient": 0
+        },
+        "task_type": "reaching",
+        "path_type": "none",
+        "target_distance_px": 150,
+        "min_target_distance_px": 150,
+        "max_target_distance_px": 150,
+        "randomize_target_distance": false,
+        "min_target_angle_deg": 0,
+        "max_target_angle_deg": 360,
+        "randomize_target_angle": false,
+        "target_angle_mode": "random_cardinal",
+        "fixed_target_angle_deg": 0,
+        "normalized_target_distance": 1,
+        "wave_amplitude": 30,
+        "wave_frequency": 1.5,
+        "min_wave_frequency": 1.5,
+        "max_wave_frequency": 1.5,
+        "wave_frequency_noise": 0,
+        "require_return_to_start": true,
+        "trials": 10,
+        "condition": "rotation",
+        "_id": "6a29f0f8a89f4ac0ed404845"
+      },
+      {
+        "id": "adapt_rotation",
+        "block_type": "baseline",
+        "mapping": "rotation_45",
+        "mapping_type": "identity",
+        "mapping_params": {
+          "base_rotation_angle_deg": 0,
+          "rotation_noise_deg": 0,
+          "rotation_angle": 0,
+          "mirror_axis": "none",
+          "shear_factor": 0,
+          "gain_factor": 1,
+          "position_coefficient": 0
+        },
+        "task_type": "reaching",
+        "path_type": "none",
+        "target_distance_px": 150,
+        "min_target_distance_px": 150,
+        "max_target_distance_px": 150,
+        "randomize_target_distance": false,
+        "min_target_angle_deg": 0,
+        "max_target_angle_deg": 360,
+        "randomize_target_angle": false,
+        "target_angle_mode": "random_cardinal",
+        "fixed_target_angle_deg": 0,
+        "normalized_target_distance": 1,
+        "wave_amplitude": 30,
+        "wave_frequency": 1.5,
+        "min_wave_frequency": 1.5,
+        "max_wave_frequency": 1.5,
+        "wave_frequency_noise": 0,
+        "require_return_to_start": true,
+        "trials": 20,
+        "condition": "rotation",
+        "_id": "6a29f0f8a89f4ac0ed404846"
+      },
+      {
+        "id": "perturb_rotation",
+        "block_type": "baseline",
+        "mapping": "rotation_60",
+        "mapping_type": "identity",
+        "mapping_params": {
+          "base_rotation_angle_deg": 0,
+          "rotation_noise_deg": 0,
+          "rotation_angle": 0,
+          "mirror_axis": "none",
+          "shear_factor": 0,
+          "gain_factor": 1,
+          "position_coefficient": 0
+        },
+        "task_type": "reaching",
+        "path_type": "none",
+        "target_distance_px": 150,
+        "min_target_distance_px": 150,
+        "max_target_distance_px": 150,
+        "randomize_target_distance": false,
+        "min_target_angle_deg": 0,
+        "max_target_angle_deg": 360,
+        "randomize_target_angle": false,
+        "target_angle_mode": "random_cardinal",
+        "fixed_target_angle_deg": 0,
+        "normalized_target_distance": 1,
+        "wave_amplitude": 30,
+        "wave_frequency": 1.5,
+        "min_wave_frequency": 1.5,
+        "max_wave_frequency": 1.5,
+        "wave_frequency_noise": 0,
+        "require_return_to_start": true,
+        "trials": 10,
+        "condition": "rotation",
+        "_id": "6a29f0f8a89f4ac0ed404847"
+      },
+      {
+        "id": "washout_rotation",
+        "block_type": "baseline",
+        "mapping": "identity",
+        "mapping_type": "identity",
+        "mapping_params": {
+          "base_rotation_angle_deg": 0,
+          "rotation_noise_deg": 0,
+          "rotation_angle": 0,
+          "mirror_axis": "none",
+          "shear_factor": 0,
+          "gain_factor": 1,
+          "position_coefficient": 0
+        },
+        "task_type": "reaching",
+        "path_type": "none",
+        "target_distance_px": 150,
+        "min_target_distance_px": 150,
+        "max_target_distance_px": 150,
+        "randomize_target_distance": false,
+        "min_target_angle_deg": 0,
+        "max_target_angle_deg": 360,
+        "randomize_target_angle": false,
+        "target_angle_mode": "random_cardinal",
+        "fixed_target_angle_deg": 0,
+        "normalized_target_distance": 1,
+        "wave_amplitude": 30,
+        "wave_frequency": 1.5,
+        "min_wave_frequency": 1.5,
+        "max_wave_frequency": 1.5,
+        "wave_frequency_noise": 0,
+        "require_return_to_start": true,
+        "trials": 10,
+        "condition": "rotation",
+        "_id": "6a29f0f8a89f4ac0ed404848"
+      },
+      {
+        "id": "baseline_mirror",
+        "block_type": "baseline",
+        "mapping": "identity",
+        "mapping_type": "identity",
+        "mapping_params": {
+          "base_rotation_angle_deg": 0,
+          "rotation_noise_deg": 0,
+          "rotation_angle": 0,
+          "mirror_axis": "none",
+          "shear_factor": 0,
+          "gain_factor": 1,
+          "position_coefficient": 0
+        },
+        "task_type": "reaching",
+        "path_type": "none",
+        "target_distance_px": 150,
+        "min_target_distance_px": 150,
+        "max_target_distance_px": 150,
+        "randomize_target_distance": false,
+        "min_target_angle_deg": 0,
+        "max_target_angle_deg": 360,
+        "randomize_target_angle": false,
+        "target_angle_mode": "random_cardinal",
+        "fixed_target_angle_deg": 0,
+        "normalized_target_distance": 1,
+        "wave_amplitude": 30,
+        "wave_frequency": 1.5,
+        "min_wave_frequency": 1.5,
+        "max_wave_frequency": 1.5,
+        "wave_frequency_noise": 0,
+        "require_return_to_start": true,
+        "trials": 10,
+        "condition": "mirror",
+        "_id": "6a29f0f8a89f4ac0ed404849"
+      },
+      {
+        "id": "adapt_mirror",
+        "block_type": "baseline",
+        "mapping": "mirror_horizontal",
+        "mapping_type": "identity",
+        "mapping_params": {
+          "base_rotation_angle_deg": 0,
+          "rotation_noise_deg": 0,
+          "rotation_angle": 0,
+          "mirror_axis": "none",
+          "shear_factor": 0,
+          "gain_factor": 1,
+          "position_coefficient": 0
+        },
+        "task_type": "reaching",
+        "path_type": "none",
+        "target_distance_px": 150,
+        "min_target_distance_px": 150,
+        "max_target_distance_px": 150,
+        "randomize_target_distance": false,
+        "min_target_angle_deg": 0,
+        "max_target_angle_deg": 360,
+        "randomize_target_angle": false,
+        "target_angle_mode": "random_cardinal",
+        "fixed_target_angle_deg": 0,
+        "normalized_target_distance": 1,
+        "wave_amplitude": 30,
+        "wave_frequency": 1.5,
+        "min_wave_frequency": 1.5,
+        "max_wave_frequency": 1.5,
+        "wave_frequency_noise": 0,
+        "require_return_to_start": true,
+        "trials": 20,
+        "condition": "mirror",
+        "_id": "6a29f0f8a89f4ac0ed40484a"
+      },
+      {
+        "id": "washout_mirror",
+        "block_type": "baseline",
+        "mapping": "identity",
+        "mapping_type": "identity",
+        "mapping_params": {
+          "base_rotation_angle_deg": 0,
+          "rotation_noise_deg": 0,
+          "rotation_angle": 0,
+          "mirror_axis": "none",
+          "shear_factor": 0,
+          "gain_factor": 1,
+          "position_coefficient": 0
+        },
+        "task_type": "reaching",
+        "path_type": "none",
+        "target_distance_px": 150,
+        "min_target_distance_px": 150,
+        "max_target_distance_px": 150,
+        "randomize_target_distance": false,
+        "min_target_angle_deg": 0,
+        "max_target_angle_deg": 360,
+        "randomize_target_angle": false,
+        "target_angle_mode": "random_cardinal",
+        "fixed_target_angle_deg": 0,
+        "normalized_target_distance": 1,
+        "wave_amplitude": 30,
+        "wave_frequency": 1.5,
+        "min_wave_frequency": 1.5,
+        "max_wave_frequency": 1.5,
+        "wave_frequency_noise": 0,
+        "require_return_to_start": true,
+        "trials": 10,
+        "condition": "mirror",
+        "_id": "6a29f0f8a89f4ac0ed40484b"
+      }
+    ],
+    "questionnaire": [
+      {
+        "id": "q_how_understand",
+        "question": "How did you try to understand the changed mouse behavior?",
+        "type": "text",
+        "options": [],
+        "_id": "6a29f0f8a89f4ac0ed40484c"
+      },
+      {
+        "id": "q_mapping_awareness",
+        "question": "What mappings did you notice?",
+        "type": "select",
+        "options": [
+          "Rotation",
+          "Mirror",
+          "Both",
+          "None"
+        ],
+        "_id": "6a29f0f8a89f4ac0ed40484d"
+      }
+    ],
+    "__v": 0,
+    "contactEmail": "mohamed.hassine@uni-bielefeld.de",
+    "courseName": "Scientific Research Methods: Foundations & Techniques",
+    "universityName": "Bielefeld University",
+    "isActive": false,
+    "name": "Default Setup 1"
+  },
+  {
+    "_id": "6a47bffd9fdb7966d11a231e",
+    "name": "New Setup 836",
+    "isActive": false,
+    "blocks": [],
+    "questionnaire": [],
+    "courseName": "Scientific Research Methods: Foundations & Techniques",
+    "universityName": "Bielefeld University",
+    "contactEmail": "mohamed.hassine@uni-bielefeld.de",
+    "__v": 0
+  },
+  {
+    "_id": "6a47cbba55821c486c98aaac",
+    "name": "Final Setup",
+    "isActive": false,
+    "blocks": [
+      {
+        "id": "b1_baseline_reaching",
+        "block_type": "baseline",
+        "mapping_type": "identity",
+        "task_type": "reaching",
+        "randomize_target_distance": true,
+        "min_target_distance_px": 300,
+        "max_target_distance_px": 500,
+        "target_angle_mode": "random_cardinal",
+        "trials": 5,
+        "condition": "baseline"
+      },
+      {
+        "id": "b2_baseline_tracking",
+        "block_type": "baseline",
+        "mapping_type": "identity",
+        "task_type": "tracking",
+        "randomize_target_distance": true,
+        "min_target_distance_px": 350,
+        "max_target_distance_px": 550,
+        "target_angle_mode": "random_range",
+        "min_target_angle_deg": 0,
+        "max_target_angle_deg": 360,
+        "path_type": "sine",
+        "wave_amplitude": 40,
+        "wave_frequency": 0.6,
+        "wave_frequency_noise": 0.1,
+        "trials": 2,
+        "condition": "baseline"
+      },
+      {
+        "id": "b3_small_rotation_robustness",
+        "block_type": "adaptation",
+        "mapping_type": "rotation",
+        "mapping_params": {
+          "base_rotation_angle_deg": 0,
+          "rotation_noise_deg": 10
+        },
+        "task_type": "reaching",
+        "randomize_target_distance": true,
+        "min_target_distance_px": 300,
+        "max_target_distance_px": 500,
+        "target_angle_mode": "random_cardinal",
+        "trials": 8,
+        "condition": "rotation phase"
+      },
+      {
+        "id": "b4_rotation_45_reaching",
+        "block_type": "adaptation",
+        "mapping_type": "rotation",
+        "mapping_params": {
+          "base_rotation_angle_deg": 45,
+          "rotation_noise_deg": 0
+        },
+        "task_type": "reaching",
+        "randomize_target_distance": true,
+        "min_target_distance_px": 350,
+        "max_target_distance_px": 550,
+        "target_angle_mode": "random_cardinal",
+        "trials": 20,
+        "condition": "rotation phase"
+      },
+      {
+        "id": "b5_rotation_45_probe",
+        "block_type": "adaptation",
+        "mapping_type": "rotation",
+        "mapping_params": {
+          "base_rotation_angle_deg": 45,
+          "rotation_noise_deg": 10
+        },
+        "task_type": "reaching",
+        "randomize_target_distance": true,
+        "min_target_distance_px": 350,
+        "max_target_distance_px": 550,
+        "target_angle_mode": "random_cardinal",
+        "trials": 6,
+        "condition": "rotation phase"
+      },
+      {
+        "id": "b6_rotation_90_reaching",
+        "block_type": "adaptation",
+        "mapping_type": "rotation",
+        "mapping_params": {
+          "base_rotation_angle_deg": 90,
+          "rotation_noise_deg": 0
+        },
+        "task_type": "reaching",
+        "randomize_target_distance": true,
+        "min_target_distance_px": 350,
+        "max_target_distance_px": 550,
+        "target_angle_mode": "random_cardinal",
+        "trials": 20,
+        "condition": "rotation phase"
+      },
+      {
+        "id": "b7_rotation_90_probe",
+        "block_type": "adaptation",
+        "mapping_type": "rotation",
+        "mapping_params": {
+          "base_rotation_angle_deg": 90,
+          "rotation_noise_deg": 10
+        },
+        "task_type": "reaching",
+        "randomize_target_distance": true,
+        "min_target_distance_px": 350,
+        "max_target_distance_px": 550,
+        "target_angle_mode": "random_cardinal",
+        "trials": 6,
+        "condition": "rotation phase"
+      },
+      {
+        "id": "b8_rotation_90_tracking",
+        "block_type": "adaptation",
+        "mapping_type": "rotation",
+        "mapping_params": {
+          "base_rotation_angle_deg": 90,
+          "rotation_noise_deg": 0
+        },
+        "task_type": "tracking",
+        "randomize_target_distance": true,
+        "min_target_distance_px": 400,
+        "max_target_distance_px": 600,
+        "target_angle_mode": "random_range",
+        "min_target_angle_deg": 0,
+        "max_target_angle_deg": 360,
+        "path_type": "sine",
+        "wave_amplitude": 70,
+        "wave_frequency": 1,
+        "wave_frequency_noise": 0.15,
+        "trials": 3,
+        "condition": "rotation phase"
+      },
+      {
+        "id": "b9_horizontal_mirror_reaching",
+        "block_type": "adaptation",
+        "mapping_type": "mirror",
+        "mapping_params": {
+          "mirror_axis": "horizontal"
+        },
+        "task_type": "reaching",
+        "randomize_target_distance": true,
+        "min_target_distance_px": 350,
+        "max_target_distance_px": 550,
+        "target_angle_mode": "random_cardinal",
+        "trials": 20,
+        "condition": "mirror phase"
+      },
+      {
+        "id": "b10_horizontal_mirror_tracking",
+        "block_type": "adaptation",
+        "mapping_type": "mirror",
+        "mapping_params": {
+          "mirror_axis": "horizontal"
+        },
+        "task_type": "tracking",
+        "randomize_target_distance": true,
+        "min_target_distance_px": 400,
+        "max_target_distance_px": 600,
+        "target_angle_mode": "random_range",
+        "min_target_angle_deg": 0,
+        "max_target_angle_deg": 360,
+        "path_type": "sine",
+        "wave_amplitude": 70,
+        "wave_frequency": 1,
+        "wave_frequency_noise": 0.15,
+        "trials": 3,
+        "condition": "mirror phase"
+      },
+      {
+        "id": "b11_aftereffect_reaching",
+        "block_type": "aftereffect",
+        "mapping_type": "identity",
+        "task_type": "reaching",
+        "randomize_target_distance": true,
+        "min_target_distance_px": 300,
+        "max_target_distance_px": 500,
+        "target_angle_mode": "random_cardinal",
+        "trials": 5,
+        "condition": "aftereffect"
+      },
+      {
+        "id": "b12_questionnaire",
+        "block_type": "questionnaire",
+        "trials": 1,
+        "condition": "none"
+      }
+    ],
+    "questionnaire": [
+      {
+        "id": "q_difficulty",
+        "question": "How would you rate the perceived difficulty of each distortion (e.g. rotations, mirror)?",
+        "type": "text"
+      },
+      {
+        "id": "q_noticed",
+        "question": "Did you notice the changed mapping?",
+        "type": "select",
+        "options": [
+          "Yes",
+          "No",
+          "Not sure"
+        ]
+      },
+      {
+        "id": "q_strategy_used",
+        "question": "Did you consciously use a strategy?",
+        "type": "select",
+        "options": [
+          "Yes",
+          "No"
+        ]
+      },
+      {
+        "id": "q_strategy_desc",
+        "question": "If yes, what strategy did you use?",
+        "type": "text"
+      },
+      {
+        "id": "q_aha",
+        "question": "Did you experience an 'aha' moment?",
+        "type": "select",
+        "options": [
+          "Yes",
+          "No"
+        ]
+      },
+      {
+        "id": "q_device",
+        "question": "Did you use a mouse or a trackpad?",
+        "type": "select",
+        "options": [
+          "Mouse",
+          "Trackpad",
+          "Other"
+        ]
+      }
+    ]
+  }
+]

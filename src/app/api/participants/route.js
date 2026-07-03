@@ -16,7 +16,29 @@ export async function POST(req) {
 export async function GET() {
   try {
     await dbConnect();
-    const participants = await Participant.find({}).sort({ created_at: -1 });
+    const participants = await Participant.aggregate([
+      {
+        $lookup: {
+          from: "questionnaires",
+          localField: "session_id",
+          foreignField: "session_id",
+          as: "qData"
+        }
+      },
+      {
+        $addFields: {
+          finished: { $gt: [{ $size: "$qData" }, 0] }
+        }
+      },
+      {
+        $project: {
+          qData: 0
+        }
+      },
+      {
+        $sort: { created_at: -1 }
+      }
+    ]);
     return NextResponse.json({ success: true, data: participants }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ success: false, error: error.message }, { status: 400 });
