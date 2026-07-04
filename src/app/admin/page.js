@@ -792,16 +792,28 @@ export default function AdminDashboard() {
                 {config.questionnaire.map((q, idx) => (
                   <div key={idx} className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm hover:shadow-md transition">
                     <div className="flex justify-between items-start mb-4">
-                      <input 
-                        className="font-bold text-lg border-b-2 border-transparent hover:border-slate-300 focus:border-blue-500 outline-none bg-transparent w-full"
-                        value={q.question}
-                        placeholder="Type question here..."
-                        onChange={(e) => {
-                          const newQs = [...config.questionnaire];
-                          newQs[idx].question = e.target.value;
-                          setConfig({...config, questionnaire: newQs});
-                        }} 
-                      />
+                      <div className="w-full">
+                        <input 
+                          className="font-bold text-lg border-b-2 border-transparent hover:border-slate-300 focus:border-blue-500 outline-none bg-transparent w-full mb-2"
+                          value={q.question}
+                          placeholder="Type question here (English)..."
+                          onChange={(e) => {
+                            const newQs = [...config.questionnaire];
+                            newQs[idx].question = e.target.value;
+                            setConfig({...config, questionnaire: newQs});
+                          }} 
+                        />
+                        <input 
+                          className="font-medium text-md text-slate-600 border-b-2 border-transparent hover:border-slate-300 focus:border-blue-500 outline-none bg-transparent w-full"
+                          value={q.question_de || ""}
+                          placeholder="Type question here (German)..."
+                          onChange={(e) => {
+                            const newQs = [...config.questionnaire];
+                            newQs[idx].question_de = e.target.value;
+                            setConfig({...config, questionnaire: newQs});
+                          }} 
+                        />
+                      </div>
                       <button 
                         className="text-red-400 hover:text-red-600 p-2"
                         onClick={() => {
@@ -845,16 +857,28 @@ export default function AdminDashboard() {
                     {q.type === "select" && (
                       <div className="mt-4">
                         <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1 block">Dropdown Options (Comma separated)</label>
-                        <input 
-                          className="w-full border border-slate-300 p-2 rounded bg-slate-50" 
-                          placeholder="Yes, No, Maybe"
-                          value={q.options ? q.options.join(", ") : ""} 
-                          onChange={(e) => {
-                            const newQs = [...config.questionnaire];
-                            newQs[idx].options = e.target.value.split(",").map(s => s.trim());
-                            setConfig({...config, questionnaire: newQs});
-                          }} 
-                        />
+                        <div className="space-y-2">
+                          <input 
+                            className="w-full border border-slate-300 p-2 rounded bg-slate-50" 
+                            placeholder="English: Yes, No, Maybe"
+                            value={q.options ? q.options.join(", ") : ""} 
+                            onChange={(e) => {
+                              const newQs = [...config.questionnaire];
+                              newQs[idx].options = e.target.value.split(",").map(s => s.trim());
+                              setConfig({...config, questionnaire: newQs});
+                            }} 
+                          />
+                          <input 
+                            className="w-full border border-slate-300 p-2 rounded bg-slate-50" 
+                            placeholder="German: Ja, Nein, Vielleicht"
+                            value={q.options_de ? q.options_de.join(", ") : ""} 
+                            onChange={(e) => {
+                              const newQs = [...config.questionnaire];
+                              newQs[idx].options_de = e.target.value.split(",").map(s => s.trim());
+                              setConfig({...config, questionnaire: newQs});
+                            }} 
+                          />
+                        </div>
                       </div>
                     )}
                   </div>
@@ -863,7 +887,7 @@ export default function AdminDashboard() {
               <button 
                 className="mt-6 w-full py-4 border-2 border-dashed border-slate-300 rounded-xl text-slate-500 font-bold hover:bg-slate-100 hover:text-slate-700 transition"
                 onClick={() => {
-                  setConfig({...config, questionnaire: [...config.questionnaire, { id: "new_q", question: "New Question?", type: "text", options: [] }]});
+                  setConfig({...config, questionnaire: [...config.questionnaire, { id: "new_q", question: "New Question?", question_de: "Neue Frage?", type: "text", options: [], options_de: [] }]});
                 }}
               >
                 + Add New Question

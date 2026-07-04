@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function CanvasTask({ block, devMode, seed, onComplete }) {
+  const { t } = useLanguage();
   const canvasRef = useRef(null);
   const [phase, setPhase] = useState("start_circle"); // start_circle, moving
   const [target, setTarget] = useState(null);
@@ -711,14 +713,14 @@ export default function CanvasTask({ block, devMode, seed, onComplete }) {
       <div className="w-[800px] flex justify-between items-end mb-4">
         <div>
           <p className="text-xl font-bold text-slate-800">
-            Task: {taskType === "reaching" ? "Reaching" : "Path Tracking"}
+            {taskType === "reaching" ? t("taskReaching") : t("taskPathTracking")}
           </p>
           <p className="text-sm font-semibold text-slate-500">
-            Trial {Math.min(trialCount + 1, block.trials)} of {block.trials}
+            {t("trialXofY", { current: Math.min(trialCount + 1, block.trials), total: block.trials })}
           </p>
         </div>
         <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-2 rounded-lg text-sm font-medium shadow-sm">
-          <strong>Click the canvas</strong> to start. Press <kbd className="bg-white border border-blue-200 px-1 rounded shadow-sm">ESC</kbd> to pause.
+          {t("clickCanvasToStart")}
         </div>
       </div>
       <canvas

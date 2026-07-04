@@ -4,8 +4,10 @@ import React, { useState, useEffect } from "react";
 import CanvasTask from "./CanvasTask";
 import { Shield, Info, Lock, EyeOff, Mail, Check, Star, Zap, Target } from "lucide-react";
 import confetti from "canvas-confetti";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function ExperimentRunner({ devMode }) {
+  const { t, language } = useLanguage();
   const [phase, setPhase] = useState("LOADING"); // LOADING, START, INSTRUCTIONS, TASK, BLOCK_BREAK, QUESTIONNAIRE, END
   const [blocks, setBlocks] = useState([]);
   const [questionnaire, setQuestionnaire] = useState([]);
@@ -147,13 +149,13 @@ export default function ExperimentRunner({ devMode }) {
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 text-black">
         {errorMsg ? (
           <div className="bg-red-100 text-red-700 p-6 rounded shadow-md max-w-md text-center">
-            <h2 className="font-bold text-lg mb-2">Database Connection Error</h2>
+            <h2 className="font-bold text-lg mb-2">{t("dbConnectionError")}</h2>
             <p>{errorMsg}</p>
-            <p className="mt-4 text-sm">Please ensure you have configured your <b>MONGODB_URI</b> in <code>.env.local</code> or that a local MongoDB instance is running on port 27017.</p>
+            <p className="mt-4 text-sm">{t("dbConnectionErrorDesc")}</p>
           </div>
         ) : (
           <div>
-            <div className="bg-white p-6 rounded shadow-md animate-pulse text-gray-700" style={{ animationDuration: "500ms" }}>Loading configuration...</div>
+            <div className="bg-white p-6 rounded shadow-md animate-pulse text-gray-700" style={{ animationDuration: "500ms" }}>{t("loadingConfig")}</div>
           </div>
         )}
       </div>
@@ -172,7 +174,7 @@ export default function ExperimentRunner({ devMode }) {
                 <div className="p-2 bg-blue-50 text-blue-600 rounded-lg border border-blue-100 shadow-xs">
                   <Shield size={22} />
                 </div>
-                <h2 className="text-lg font-bold text-slate-900">Data Privacy Disclaimer</h2>
+                <h2 className="text-lg font-bold text-slate-900">{t("dataPrivacyDisclaimer")}</h2>
               </div>
               
               <div className="space-y-4 text-xs md:text-sm text-slate-600">
@@ -182,9 +184,9 @@ export default function ExperimentRunner({ devMode }) {
                     <EyeOff size={16} />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-slate-800 mb-0.5">Complete Anonymity</h3>
+                    <h3 className="font-semibold text-slate-800 mb-0.5">{t("completeAnonymity")}</h3>
                     <p className="leading-relaxed">
-                      We do <strong>not</strong> collect any Personal Identifiable Information (PII) like names, IP addresses, emails, or exact locations. All data is completely anonymized. It is impossible to link the mouse tracking data back to you personally.
+                      {t("completeAnonymityDesc")}
                     </p>
                   </div>
                 </div>
@@ -195,9 +197,9 @@ export default function ExperimentRunner({ devMode }) {
                     <Info size={16} />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-slate-800 mb-0.5">Purpose of the Study</h3>
+                    <h3 className="font-semibold text-slate-800 mb-0.5">{t("purposeOfStudy")}</h3>
                     <p className="leading-relaxed">
-                      This data is collected purely for a university project in the <em>{disclaimerConfig.courseName}</em> course at <strong>{disclaimerConfig.universityName}</strong> to analyze motor adaptation strategies.
+                      {t("purposeOfStudyDesc", { courseName: disclaimerConfig.courseName, universityName: disclaimerConfig.universityName })}
                     </p>
                   </div>
                 </div>
@@ -208,9 +210,9 @@ export default function ExperimentRunner({ devMode }) {
                     <Lock size={16} />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-slate-800 mb-0.5">Secure Data Handling</h3>
+                    <h3 className="font-semibold text-slate-800 mb-0.5">{t("secureDataHandling")}</h3>
                     <p className="leading-relaxed">
-                      The data will be stored securely in our database, viewed only by the project team/course instructor, and deleted after the project is graded.
+                      {t("secureDataHandlingDesc")}
                     </p>
                   </div>
                 </div>
@@ -223,9 +225,9 @@ export default function ExperimentRunner({ devMode }) {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-slate-800 mb-0.5">Voluntary Participation & Withdrawal</h3>
+                    <h3 className="font-semibold text-slate-800 mb-0.5">{t("voluntaryParticipation")}</h3>
                     <p className="leading-relaxed">
-                      Participation is completely voluntary. You can stop the experiment at any time by closing the tab. No data will be saved if you quit early.
+                      {t("voluntaryParticipationDesc")}
                     </p>
                   </div>
                 </div>
@@ -236,7 +238,7 @@ export default function ExperimentRunner({ devMode }) {
             <div className="mt-8 pt-4 border-t border-slate-100 flex items-start gap-2.5 text-[11px] text-slate-400 leading-normal">
               <Mail size={14} className="text-slate-400 shrink-0 mt-0.5" />
               <span>
-                If you have any questions, you can contact the project student team at:{" "}
+                {t("contactInfo")}{" "}
                 <a href={`mailto:${disclaimerConfig.contactEmail}`} className="text-blue-600 hover:underline font-semibold whitespace-nowrap">
                   {disclaimerConfig.contactEmail}
                 </a>
@@ -246,20 +248,20 @@ export default function ExperimentRunner({ devMode }) {
 
           {/* Right Column: Start Form & Consent */}
           <div className="md:w-5/12 p-8 flex flex-col justify-center bg-white">
-            <h1 className="text-xl font-bold text-slate-900 mb-1">Mouse Kinematics Study</h1>
-            <p className="text-xs text-slate-400 mb-6">Select your input device and accept the consent terms to start.</p>
+            <h1 className="text-xl font-bold text-slate-900 mb-1">{t("mouseKinematicsStudy")}</h1>
+            <p className="text-xs text-slate-400 mb-6">{t("selectInputDevice")}</p>
 
             <form onSubmit={handleStart} className="space-y-4">
 
               <div className="space-y-1">
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Input Device</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t("inputDevice")}</label>
                 <select 
                   className="w-full border border-slate-200 focus:border-blue-500 focus:ring-3 focus:ring-blue-50/50 p-2.5 rounded-xl text-slate-900 bg-white outline-none transition font-medium text-sm"
                   value={participant.input_device}
                   onChange={e => setParticipant({...participant, input_device: e.target.value})}
                 >
-                  <option value="mouse">Mouse</option>
-                  <option value="trackpad">Trackpad</option>
+                  <option value="mouse">{t("mouse")}</option>
+                  <option value="trackpad">{t("trackpad")}</option>
                 </select>
               </div>
 
@@ -279,7 +281,7 @@ export default function ExperimentRunner({ devMode }) {
                     </div>
                   </div>
                   <span className="text-[11px] text-slate-400 leading-normal select-none group-hover:text-slate-500 transition">
-                    I agree to participate in this study. I understand that my interaction data (mouse movements, response times) will be collected anonymously and used solely for academic purposes. I can close the browser at any time to withdraw.
+                    {t("consentText")}
                   </span>
                 </label>
               </div>
@@ -293,7 +295,7 @@ export default function ExperimentRunner({ devMode }) {
                     : "bg-slate-100 text-slate-300 cursor-not-allowed shadow-none"
                 }`}
               >
-                Start Experiment
+                {t("startExperiment")}
               </button>
             </form>
           </div>
@@ -308,31 +310,31 @@ export default function ExperimentRunner({ devMode }) {
       <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50 p-4 text-slate-800">
         <div className="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 max-w-2xl w-full">
           <h2 className="text-2xl font-bold mb-6 text-slate-900 border-b pb-4 flex items-center gap-2">
-            <Target className="text-blue-600" /> How to Play
+            <Target className="text-blue-600" /> {t("howToPlay")}
           </h2>
           
           <div className="space-y-6 text-slate-600">
             <div className="flex gap-4 items-start">
               <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold shrink-0 mt-1">1</div>
               <div>
-                <h3 className="font-bold text-slate-800 text-lg">Lock Your Cursor</h3>
-                <p>When the task starts, you will see a canvas. <strong>Click anywhere on it</strong> to lock your mouse cursor inside the game window. You can press <kbd className="bg-slate-100 border border-slate-200 px-1 rounded mx-1">ESC</kbd> at any time if you need to pause or unlock your mouse.</p>
+                <h3 className="font-bold text-slate-800 text-lg">{t("lockYourCursor")}</h3>
+                <p>{t("lockYourCursorDesc")}</p>
               </div>
             </div>
 
             <div className="flex gap-4 items-start">
               <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold shrink-0 mt-1">2</div>
               <div>
-                <h3 className="font-bold text-slate-800 text-lg">Start the Trial</h3>
-                <p>Move your red cursor into the <strong>black starting circle</strong> in the very center. Hold it there until a blue target circle appears on the edge of the screen.</p>
+                <h3 className="font-bold text-slate-800 text-lg">{t("startTheTrial")}</h3>
+                <p>{t("startTheTrialDesc")}</p>
               </div>
             </div>
 
             <div className="flex gap-4 items-start">
               <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold shrink-0 mt-1">3</div>
               <div>
-                <h3 className="font-bold text-slate-800 text-lg">Shoot for the Target!</h3>
-                <p>Move your cursor directly into the blue target as fast and as straight as you can. Sometimes the cursor might behave unpredictably (like a mirror or rotated controls) — try your best to adapt!</p>
+                <h3 className="font-bold text-slate-800 text-lg">{t("shootForTheTarget")}</h3>
+                <p>{t("shootForTheTargetDesc")}</p>
               </div>
             </div>
           </div>
@@ -342,7 +344,7 @@ export default function ExperimentRunner({ devMode }) {
               onClick={() => setPhase("TASK")} 
               className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl shadow-md transition transform hover:scale-105 active:scale-95 flex items-center gap-2"
             >
-              I Understand, Let's Go! <Zap size={18} />
+              {t("iUnderstandLetsGo")} <Zap size={18} />
             </button>
           </div>
         </div>
@@ -366,24 +368,24 @@ export default function ExperimentRunner({ devMode }) {
           <div className="w-20 h-20 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-blue-50">
             <Star size={40} className="fill-current text-yellow-400 stroke-yellow-500" />
           </div>
-          <h2 className="text-3xl font-black mb-2 text-slate-900 tracking-tight">Block Completed!</h2>
+          <h2 className="text-3xl font-black mb-2 text-slate-900 tracking-tight">{t("blockCompleted")}</h2>
           <p className="mb-6 text-slate-500 font-medium">
-            Great job! You have conquered this block.
+            {t("greatJobConquered")}
           </p>
 
           <div className="bg-slate-50 rounded-xl p-4 flex justify-between gap-4 mb-8 border border-slate-100">
             <div className="flex flex-col items-center flex-1">
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Accuracy</span>
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">{t("accuracy")}</span>
               <span className="text-2xl font-black text-blue-600">{blockStats.accuracy}%</span>
             </div>
             <div className="w-px bg-slate-200"></div>
             <div className="flex flex-col items-center flex-1">
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Avg Speed</span>
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">{t("avgSpeed")}</span>
               <span className="text-2xl font-black text-emerald-600">{blockStats.avgSpeed}ms</span>
             </div>
             <div className="w-px bg-slate-200"></div>
             <div className="flex flex-col items-center flex-1">
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Score</span>
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">{t("score")}</span>
               <span className="text-2xl font-black text-purple-600">{blockStats.score}</span>
             </div>
           </div>
@@ -401,7 +403,7 @@ export default function ExperimentRunner({ devMode }) {
                 : "bg-slate-200 text-slate-400 cursor-not-allowed"
             }`}
           >
-            {nextBlockReady ? "Start Next Block" : "Please Wait..."}
+            {nextBlockReady ? t("startNextBlock") : t("pleaseWait")}
           </button>
         </div>
       </div>
@@ -412,14 +414,25 @@ export default function ExperimentRunner({ devMode }) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4 text-black">
         <div className="bg-white p-8 rounded shadow-md max-w-lg w-full">
-          <h2 className="text-xl font-bold mb-4">Post-Experiment Questionnaire</h2>
+          <h2 className="text-xl font-bold mb-4">{t("postExperimentQuestionnaire")}</h2>
           <form onSubmit={async (e) => {
             e.preventDefault();
             const data = new FormData(e.target);
             const formAnswers = {};
+            let isValid = true;
+            
             questionnaire.forEach(q => {
-              formAnswers[q.id] = data.get(q.id);
+              const val = data.get(q.id);
+              if (q.type === "text" && (!val || val.trim().length === 0)) {
+                isValid = false;
+                const displayQuestion = language === "de" && q.question_de ? q.question_de : q.question;
+                alert(`${t("pleaseProvideWrittenAnswer")} "${displayQuestion}"`);
+              }
+              formAnswers[q.id] = val;
             });
+
+            if (!isValid) return;
+
             await fetch("/api/questionnaires", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -432,18 +445,24 @@ export default function ExperimentRunner({ devMode }) {
             });
             setPhase("END");
           }} className="flex flex-col gap-4">
-            {questionnaire.map((q) => (
-              <label key={q.id} className="flex flex-col">
-                {q.question}
-                {q.type === "text" && <textarea name={q.id} className="border p-2 rounded mt-1" required></textarea>}
+            {questionnaire.map((q) => {
+              const displayQuestion = language === "de" && q.question_de ? q.question_de : q.question;
+              const displayOptions = language === "de" && q.options_de && q.options_de.length > 0 ? q.options_de : q.options;
+              return (
+              <label key={q.id} className="flex flex-col font-medium text-slate-800">
+                <span className="mb-1">{displayQuestion}</span>
+                {q.type === "text" && (
+                  <textarea name={q.id} className="border border-slate-300 p-2.5 rounded-lg outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition" required minLength={2} placeholder={t("pleaseTypeYourAnswerHere")}></textarea>
+                )}
                 {q.type === "select" && (
-                  <select name={q.id} className="border p-2 rounded mt-1" required>
-                    {q.options.map((opt, idx) => <option key={idx} value={opt}>{opt}</option>)}
+                  <select name={q.id} className="border border-slate-300 p-2.5 rounded-lg outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition" required defaultValue="">
+                    <option value="" disabled>{t("selectAnOption")}</option>
+                    {displayOptions.map((opt, idx) => <option key={idx} value={opt}>{opt}</option>)}
                   </select>
                 )}
               </label>
-            ))}
-            <button type="submit" className="bg-blue-600 text-white p-2 rounded">Submit</button>
+            )})}
+            <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white font-bold p-3 rounded-xl mt-4 shadow-md transition transform active:scale-95">{t("submitAnswers")}</button>
           </form>
         </div>
       </div>
@@ -455,12 +474,12 @@ export default function ExperimentRunner({ devMode }) {
       <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50 p-4 md:p-8 text-slate-800 font-sans">
         <div className="bg-white p-10 rounded-3xl shadow-2xl border border-slate-100 max-w-lg w-full text-center relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 via-emerald-500 to-purple-500"></div>
-          <h2 className="text-4xl font-black mb-4 text-slate-900">Thank You! 🎉</h2>
+          <h2 className="text-4xl font-black mb-4 text-slate-900">{t("thankYou")}</h2>
           <p className="text-lg text-slate-600 mb-6 font-medium">
-            You've successfully completed the entire experiment.
+            {t("successfullyCompleted")}
           </p>
           <p className="text-sm text-slate-500 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-100 mb-6">
-            Your participation provides invaluable data for our motor learning research. You may now close this browser tab. Have a wonderful day!
+            {t("participationProvidesInvaluable")}
           </p>
         </div>
       </div>

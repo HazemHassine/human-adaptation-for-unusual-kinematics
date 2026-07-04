@@ -39,8 +39,10 @@ const BlockSchema = new mongoose.Schema({
 const QuestionnaireFieldSchema = new mongoose.Schema({
   id: { type: String, required: true },
   question: { type: String, required: true },
+  question_de: { type: String },
   type: { type: String, enum: ["text", "select", "number"], required: true },
-  options: [{ type: String }] // only used if type === 'select'
+  options: [{ type: String }], // only used if type === 'select'
+  options_de: [{ type: String }] // only used if type === 'select'
 });
 
 const ConfigSchema = new mongoose.Schema({
