@@ -14,6 +14,7 @@ export default function ExperimentRunner({ devMode }) {
   const [errorMsg, setErrorMsg] = useState("");
   const [consentChecked, setConsentChecked] = useState(false);
   const [blockStats, setBlockStats] = useState({ accuracy: 0, avgSpeed: 0, score: 0 });
+  const [nextBlockReady, setNextBlockReady] = useState(false);
   const [disclaimerConfig, setDisclaimerConfig] = useState({
     courseName: "Scientific Research Methods: Foundations & Techniques",
     universityName: "Bielefeld University",
@@ -73,6 +74,14 @@ export default function ExperimentRunner({ devMode }) {
         origin: { y: 0.6 },
         colors: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444']
       });
+    }
+
+    if (phase === "BLOCK_BREAK") {
+      setNextBlockReady(false);
+      const timer = setTimeout(() => {
+        setNextBlockReady(true);
+      }, 1000);
+      return () => clearTimeout(timer);
     }
   }, [phase]);
   
@@ -381,12 +390,18 @@ export default function ExperimentRunner({ devMode }) {
 
           <button 
             onClick={() => {
+              if (!nextBlockReady) return;
               setCurrentBlockIndex(i => i + 1);
               setPhase("TASK");
             }} 
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl font-bold text-lg shadow-md transition transform hover:scale-[1.02] active:scale-[0.98]"
+            disabled={!nextBlockReady}
+            className={`w-full py-3.5 rounded-xl font-bold text-lg shadow-md transition transform flex items-center justify-center gap-2 ${
+              nextBlockReady 
+                ? "bg-blue-600 hover:bg-blue-700 text-white hover:scale-[1.02] active:scale-[0.98]" 
+                : "bg-slate-200 text-slate-400 cursor-not-allowed"
+            }`}
           >
-            Start Next Block
+            {nextBlockReady ? "Start Next Block" : "Please Wait..."}
           </button>
         </div>
       </div>
